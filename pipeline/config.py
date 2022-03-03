@@ -12,7 +12,7 @@ MODEL_DIR = '/workspace/minio/tensorboard/project/' + PROJECT_NAME + '/model/' +
 MODEL_DIR_WITH_HOST = MODEL_DIR + RANDOM_HOSTNAME
 LOG_DIR = '/project/' + PROJECT_NAME + '/model/' + NAME + '/'
 MINIO_PATH = 'minio/tensorboard/project/' + PROJECT_NAME + '/model/' + NAME + '/'
-IP_ADDRESS = '192.168.35.10'
+IP_ADDRESS = '34.216.158.83'
 
 # minio parameters
 S3_ENDPOINT = 'minio-service.kubeflow.svc.cluster.local:9000'
@@ -20,7 +20,7 @@ AWS_ENDPOINT_URL = "http://" + S3_ENDPOINT
 AWS_ACCESS_KEY_ID = "minio"
 AWS_SECRET_ACCESS_KEY = "minio123"
 AWD_REGION = "us-east-1"
-MINIO_ADDR = 'http://' + IP_ADDRESS + ':32489/'
+MINIO_ADDR = 'http://' + IP_ADDRESS + ':31279/'
 
 # katib parameters
 MAX_TRIAL_COUNT = 1

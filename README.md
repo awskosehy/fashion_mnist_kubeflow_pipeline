@@ -147,15 +147,6 @@ tar -zxvf helm-v3.7.1-linux-amd64.tar.gz
 sudo mv linux-amd64/helm /usr/local/bin/helm
 ```
 
-### install local path provisioner
-```
-kubectl apply -f https://raw.githubusercontent.com/rancher/local-path-provisioner/v0.0.20/deploy/local-path-storage.yaml
-sleep 30s
-kubectl -n local-path-storage get pod
-kubectl patch storageclass local-path  -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"true"}}}'
-kubectl get sc
-```
-
 ### install nvidia driver
 ```
 sudo add-apt-repository ppa:graphics-drivers/ppa &&
@@ -217,14 +208,27 @@ kubectl get pod -n kube-system | grep nvidia
 sleep 10s
 kubectl get nodes "-o=custom-columns=NAME:.metadata.name,GPU:.status.allocatable.nvidia\.com/gpu"
 ```
-
+### install openebs
+```
+helm repo add openebs https://openebs.github.io/charts
+helm repo update
+helm install openebs --namespace openebs openebs/openebs --create-namespace
+```
+##### openebs install verification
+```
+kubectl get pods -n openebs -l openebs.io/component-name=openebs-localpv-provisioner
+# sleep 1 minute
+sleep 90s
+# change default storage class as openebs-hostpath
+kubectl patch storageclass openebs-hostpath -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"true"}}}'
+```
 ### install openebs nfs provisioner
 ```
 helm repo add openebs https://openebs.github.io/charts
 helm repo update
 helm install openebs openebs/openebs -n openebs --create-namespace --set nfs-provisioner.enabled=true
 ```
-#### aopenebs_rwx_sc.yaml
+#### openebs_rwx_sc.yaml
 ```
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
@@ -506,4 +510,93 @@ kubectl get pod -n kubeflow | grep katib
 ##### Check the katib-controller pod name and then
 ```
 kubectl get pod -n kubeflow | grep katib-controller | awk {'print $1'} | xargs kubectl delete pod -n kubeflow
+```
+### setup read write many(rwx) pv, pvc for minio deployment
+#### minio_pv_rwx.yaml
+```
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: minio-pv-rwx
+  namespace: kubeflow
+spec:
+  storageClassName: openebs-rwx
+  capacity:
+    storage: 100Gi
+  accessModes:
+  - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  local:
+    path: /data
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - k8s
+```
+#### minio_pvc_rwx.yaml
+```
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: minio-pvc-rwx
+  namespace: kubeflow
+spec:
+  storageClassName: openebs-rwx
+  volumeName: minio-pv-rwx
+  accessModes:
+  - ReadWriteMany
+  resources:
+    requests:
+      storage: 100Gi
+```
+#### apply minio_pv_rwx, minio_pvc_rwx
+```
+kubectl apply -f minio_pv_rwx.yaml -f minio_pvc_rwx.yaml
+```
+#### update minio deployment config
+```
+KUBE_EDITOR=nano kubectl edit deploy/minio -n kubeflow
+
+volumes":[{"name":"data","persistentVolumeClaim":{"claimName":"minio-pvc -> minio-pvc-rwx"}
+
+spec:
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: minio-pvc -> minio-pvc-rwx
+```
+### install kubernetes dahsboard for debugging
+```
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.5.0/aio/deploy/recommended.yaml
+```
+#### create sample user in k8s dashboard
+```
+cat <<EOF | kubectl apply -f -
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: admin-user
+  namespace: kubernetes-dashboard
+EOF
+
+cat <<EOF | kubectl apply -f -
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: admin-user
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
+subjects:
+- kind: ServiceAccount
+  name: admin-user
+  namespace: kubernetes-dashboard
+EOF
+
+kubectl -n kubernetes-dashboard get secret $(kubectl -n kubernetes-dashboard get sa/admin-user -o jsonpath="{.secrets[0].name}") -o go-template="{{.data.token | base64decode}}"
 ```
