@@ -259,13 +259,17 @@ export CONFIG_FILE=${KF_DIR}/kfctl_istio_dex.yaml
 
 kfctl apply -V -f ${CONFIG_FILE}
 ```
-
+### access to kubeflow dashboard
+```
+https://PUBLIC_IP_ADDR:31380
+```
 ### tensorboard minio setup
 #### change minio-service type as NodePort
 ```
 kubectl edit svc/minio-service -n kubeflow
 ```
 go to minio browser
+
 create "tensorboard" bucket
 
 ### create ml-pipeline-aws-secret
@@ -446,26 +450,26 @@ create three files: ca-csr.json, server-csr.json, ca-config.json
 ```
 sudo wget https://github.com/cloudflare/cfssl/releases/download/v1.6.0/cfssl_1.6.0_linux_amd64
 sudo chmod +x cfssl_1.6.0_linux_amd64
-mv cfssl_1.6.0_linux_amd64 cfssl
+sudo mv cfssl_1.6.0_linux_amd64 cfssl
 sudo mv cfssl /usr/bin
 ```
 ##### Download cfssljson
 ```
 sudo wget https://github.com/cloudflare/cfssl/releases/download/v1.6.0/cfssljson_1.6.0_linux_amd64
 sudo chmod +x cfssljson_1.6.0_linux_amd64
-mv cfssljson_1.6.0_linux_amd64 cfssljson
+sudo mv cfssljson_1.6.0_linux_amd64 cfssljson
 sudo mv cfssljson /usr/bin
 ```
 ##### Generating SSL certs
 ```
-cfssl gencert -initca ca-csr.json | cfssljson -bare ca –
-cfssl gencert -ca=ca.pem -ca-key=ca-key.pem -config=ca-config.json -profile=kubernetes server-csr.json | cfssljson -bare server
+sudo cfssl gencert -initca ca-csr.json | sudo cfssljson -bare ca –
+sudo cfssl gencert -ca=ca.pem -ca-key=ca-key.pem -config=ca-config.json -profile=kubernetes server-csr.json | sudo cfssljson -bare server
 ```
 ##### Needed renaming
 ```
-mv ca.pem ca-cert.pem
-mv server.pem cert.pem
-mv server-key.pem key.pem
+sudo mv ca.pem ca-cert.pem
+sudo mv server.pem cert.pem
+sudo mv server-key.pem key.pem
 ```
 ##### k8s secret refresh
 ```
@@ -501,7 +505,7 @@ spec:
         - key: kubernetes.io/hostname
           operator: In
           values:
-          - k8s
+          - ubuntu
 ```
 #### minio_pvc_rwx.yaml
 ```
@@ -565,4 +569,8 @@ subjects:
 EOF
 
 kubectl -n kubernetes-dashboard get secret $(kubectl -n kubernetes-dashboard get sa/admin-user -o jsonpath="{.secrets[0].name}") -o go-template="{{.data.token | base64decode}}"
+```
+#### how to access kubernetes-dashboard
+```
+https://PUBLIC_IP://KUBERNETES-DASHBOARD-NODEPORT
 ```
