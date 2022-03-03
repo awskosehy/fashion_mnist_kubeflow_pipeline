@@ -224,41 +224,7 @@ kubectl patch storageclass openebs-hostpath -p '{"metadata": {"annotations":{"st
 ```
 ### install openebs nfs provisioner
 ```
-helm repo add openebs https://openebs.github.io/charts
-helm repo update
-helm install openebs openebs/openebs -n openebs --create-namespace --set nfs-provisioner.enabled=true
-```
-#### openebs_rwx_sc.yaml
-```
-apiVersion: storage.k8s.io/v1
-kind: StorageClass
-metadata:
-  name: openebs-rwx
-  annotations:
-    openebs.io/cas-type: nfsrwx
-    cas.openebs.io/config: |
-      - name: NFSServerType
-        value: "kernel"
-      - name: BackendStorageClass
-        value: "openebs-hostpath"
-      #  LeaseTime defines the renewal period(in seconds) for client state
-      #- name: LeaseTime
-      #  value: 30
-      #  GraceTime defines the recovery period(in seconds) to reclaim locks
-      #- name: GraceTime
-      #  value: 30
-      #  FSGID defines the group permissions of NFS Volume. If it is set
-      #  then non-root applications should add FSGID value under pod
-      #  Supplemental groups
-      #- name: FSGID
-      #  value: "120"
-provisioner: openebs.io/nfsrwx
-reclaimPolicy: Delete
-```
-
-### apply openebs_rwx_sc
-```
-kubectl apply -f openebs_rwx_sc.yaml
+kubectl apply -f https://openebs.github.io/charts/nfs-operator.yaml
 ```
 
 ## setup kubeflow 1.2 dex version
