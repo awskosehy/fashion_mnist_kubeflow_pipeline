@@ -505,7 +505,7 @@ spec:
         - key: kubernetes.io/hostname
           operator: In
           values:
-          - ubuntu
+          - NODE_NAME
 ```
 #### minio_pvc_rwx.yaml
 ```
