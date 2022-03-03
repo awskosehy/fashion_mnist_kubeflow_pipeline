@@ -462,14 +462,14 @@ sudo mv cfssljson /usr/bin
 ```
 ##### Generating SSL certs
 ```
-sudo cfssl gencert -initca ca-csr.json | sudo cfssljson -bare ca –
-sudo cfssl gencert -ca=ca.pem -ca-key=ca-key.pem -config=ca-config.json -profile=kubernetes server-csr.json | sudo cfssljson -bare server
+cfssl gencert -initca ca-csr.json | cfssljson -bare ca –
+cfssl gencert -ca=ca.pem -ca-key=ca-key.pem -config=ca-config.json -profile=kubernetes server-csr.json | cfssljson -bare server
 ```
 ##### Needed renaming
 ```
-sudo mv ca.pem ca-cert.pem
-sudo mv server.pem cert.pem
-sudo mv server-key.pem key.pem
+mv ca.pem ca-cert.pem
+mv server.pem cert.pem
+mv server-key.pem key.pem
 ```
 ##### k8s secret refresh
 ```
@@ -570,6 +570,15 @@ EOF
 
 kubectl -n kubernetes-dashboard get secret $(kubectl -n kubernetes-dashboard get sa/admin-user -o jsonpath="{.secrets[0].name}") -o go-template="{{.data.token | base64decode}}"
 ```
+#### change kubernetes-dashboard svc as NodePort
+```
+kubectl -n kubernetes-dashboard edit svc/kubernetes-dashboard
+```
+#### check kubernetes-dashboard nodeport
+```
+kubectl -n kubernetes-dashboard get svc/kubernetes-dashboard
+```
+
 #### how to access kubernetes-dashboard
 ```
 https://PUBLIC_IP://KUBERNETES-DASHBOARD-NODEPORT
