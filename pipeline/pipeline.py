@@ -66,7 +66,7 @@ def create_pytorch_fashion_mnist_pipeline():
     .add_env_variable(V1EnvVar(name='AWS_ENDPOINT_URL', value=config.AWS_ENDPOINT_URL)) \
     .add_env_variable(V1EnvVar(name='AWS_ACCESS_KEY_ID', value=config.AWS_ACCESS_KEY_ID)) \
     .add_env_variable(V1EnvVar(name='AWS_SECRET_ACCESS_KEY', value=config.AWS_SECRET_ACCESS_KEY)) \
-    .add_env_variable(V1EnvVar(name='AWD_REGION', value=config.AWD_REGION)) \
+    .add_env_variable(V1EnvVar(name='AWS_REGION', value=config.AWS_REGION)) \
     .add_env_variable(V1EnvVar(name='S3_USE_HTTPS', value='0')) \
     .add_env_variable(V1EnvVar(name='SE_VERIFY_SSL', value='0'))
 

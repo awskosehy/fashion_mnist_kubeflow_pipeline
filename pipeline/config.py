@@ -19,8 +19,8 @@ S3_ENDPOINT = 'minio-service.kubeflow.svc.cluster.local:9000'
 AWS_ENDPOINT_URL = "http://" + S3_ENDPOINT
 AWS_ACCESS_KEY_ID = "minio"
 AWS_SECRET_ACCESS_KEY = "minio123"
-AWD_REGION = "us-east-1"
-MINIO_ADDR = 'http://' + IP_ADDRESS + ':31279/'
+AWS_REGION = "us-east-1"
+MINIO_ADDR = 'http://' + IP_ADDRESS + ':31419/'
 
 # katib parameters
 MAX_TRIAL_COUNT = 1
