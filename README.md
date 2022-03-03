@@ -272,6 +272,13 @@ go to minio browser
 
 create "tensorboard" bucket
 
+
+create "mlpipeline" bucket
+
+create "mlpipeline/pipelines" forlder
+
+create "mlpipeline/artifacts" forlder
+
 ### create ml-pipeline-aws-secret
 ```
 export AWS_ACCESS_KEY_ID=minio
