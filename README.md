@@ -574,3 +574,22 @@ kubectl -n kubernetes-dashboard get secret $(kubectl -n kubernetes-dashboard get
 ```
 https://PUBLIC_IP://KUBERNETES-DASHBOARD-NODEPORT
 ```
+### prepare fashion-mnist kubeflow pipeline
+#### change pv's nodeAffinity values
+```
+kubectl apply -f minio_pv_admin.yaml -f minio_pvc_admin.yaml -f storage_pv.yaml -f storage_pvc.yaml
+```
+#### make folder /data/storage
+#### change config.py
+#### build docker images
+```
+sh build.sh
+```
+#### run kfp docker ocntainer
+```
+docker run -it --rm kosehy/kfp
+```
+#### run the pipeline.py
+```
+python pipeline.py
+```
