@@ -1,0 +1,18 @@
+name: Tensorboard display pipeline
+description: Tensorboard display multi-user kubeflow pipeline component
+inputs:
+  - {name: S3 path, type: String, description: 'S3 path which tensorboard log file is located.'}
+outputs:
+  - {name: MLPipeline UI metadata, type: UI metadata}
+metadata:
+  annotations:
+    author: Seunghyun Ko <kosehy@gmail.com>
+    canonical_location: 'component.yaml'
+implementation:
+  container:
+    image: kosehy/kfp_tensorboard:latest
+    command: [python3, src/tensorboard_display.py]
+    args: [
+      --s3-path, {inputValue: S3 path},
+      --ui-metadata-output-path, {outputPath: MLPipeline UI metadata},
+    ]

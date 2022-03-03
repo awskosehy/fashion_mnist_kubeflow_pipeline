@@ -1,0 +1,18 @@
+name: Model Path Display Pipeline
+description: Model Path display for multi-user kubeflow pipeline component
+inputs:
+  - {name: Model Path, type: String, description: 'Parse model path from minio'}
+outputs:
+  - {name: MLPipeline UI Metadata, type: UI metadata}
+metadata:
+  annotations:
+    author: SEUNG HYUN KO <kosehy@gmail.com>
+    canonical_location: 'component.yaml'
+implementation:
+  container:
+    image: kosehy/kfp_model_path:latest
+    command: [python, src/model_path.py]
+    args: [
+      --model-path, {inputValue: Model Path},
+      --ui-metadata-output-path, {outputPath: MLPipeline UI Metadata},
+    ]

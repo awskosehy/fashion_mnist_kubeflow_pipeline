@@ -1,0 +1,44 @@
+name: PytorchJob Katib - Launch Experiment
+description: PytorchJob Katib Experiment launcher
+inputs:
+- {name: Experiment Name,             type: String,       default: '',                                       description: 'Experiment name'}
+- {name: Experiment Namespace,        type: String,       default: admin,                                    description: 'Experiment namespace'}
+- {name: Dataset Path,                type: String,       default: './data',                                 description: 'Dataset path'}
+- {name: Log Dir,                     type: String,       default: './runs',                                 description: 'Summary Writer log will be stored in this directory'}
+- {name: Max Trial Count,             type: Integer,      default: 1,                                        description: 'Number of Max trial count'}
+- {name: Max Failed Trial Count,      type: Integer,      default: 1,                                        description: 'Number of Max failed trial allowed'}
+- {name: Parallel Trial Count,        type: Integer,      default: 1,                                        description: 'Number of parallel katib job want to run'}
+- {name: Epochs,                      type: Integer,      default: 10,                                       description: 'Number of epochs to train (default: 10)'}
+- {name: Loss Goal,                   type: float,        default: 0.001,                                    description: 'Goal of Mean Average Precision value to achieve during katib'}
+- {name: Min Learning Rate,           type: float,        default: 0.01,                                     description: 'Max Number Of Boxes Min value'}
+- {name: Max Learning Rate,           type: float,        default: 0.05,                                     description: 'Max Number Of Boxes Max value'}
+- {name: Min Momentum,                type: float,        default: 0.5,                                      description: 'Max Number Of Boxes Min value'}
+- {name: Max Momentum,                type: float,        default: 0.9,                                      description: 'Max Number Of Boxes Max value'}
+- {name: Delete After Done,           type: Bool,         default: False,                                    description: 'When tfjob done, delete the tfjob automatically if it is True.'}
+- {name: Pytorch Fashion Mnist Image, type: String,       default: 'kosehy/pytorch_fashion_mnist:latest',   description: 'Which Docker Container Image is used for pytorch fashion mnist'}
+- {name: Output File Path,            type: String,       default: '',                                       description: 'The output file path'}
+outputs:
+- {name: Best Parameter Set,          type: JsonObject,                                                      description: 'The hyperparameter set of the best Experiment Trial'}
+implementation:             
+  container:
+    image: kosehy/katib_pytorchjob:latest
+    command: [python, src/launch_experiment.py]
+    args: [
+      --experiment-name,                 {inputValue: Experiment Name},
+      --experiment-namespace,            {inputValue: Experiment Namespace},
+      --dataset-path,                    {inputValue: Dataset Path},
+      --log-dir,                         {inputValue: Log Dir},
+      --max-trial-count,                 {inputValue: Max Trial Count},
+      --max-failed-trial-count,          {inputValue: Max Failed Trial Count},
+      --parallel-trial-count,            {inputValue: Parallel Trial Count},
+      --epochs,                          {inputValue: Epochs},
+      --loss-goal,                       {inputValue: Loss Goal},
+      --min-learning-rate,               {inputValue: Min Learning Rate},
+      --max-learning-rate,               {inputValue: Max Learning Rate},
+      --min-momentum,                    {inputValue: Min Momentum},
+      --max-momentum,                    {inputValue: Max Momentum},
+      --delete-after-done,               {inputValue: Delete After Done},
+      --pytorch-fashion-mnist-image,     {inputValue: Pytorch Fashion Mnist Image},
+      --output-file-path,                {inputValue: Output File Path},
+      --output-file,                     {outputPath: Best Parameter Set},
+    ]

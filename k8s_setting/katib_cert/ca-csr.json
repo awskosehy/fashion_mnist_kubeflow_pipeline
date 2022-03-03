@@ -1,0 +1,17 @@
+{
+    "CN": "katib-controller.kubeflow.svc",
+    "hosts": [
+        "katib-controller.kubeflow.svc"
+    ],
+    "key": {
+        "algo": "ecdsa",
+        "size": 256
+    },
+    "names": [
+        {
+            "C": "US",
+            "ST": "CA",
+            "L": "San Francisco"
+        }
+    ]
+}
