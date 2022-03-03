@@ -2,7 +2,7 @@
 DESCRIPTION='add save a general checkpoint for inference and/or resuming training'
 PROJECT_NAME = 'pytorchjob-katib'
 PIPELINE_NAME = PROJECT_NAME + '-pipeline'
-EXPERIMENT_VERSION = 'v005'
+EXPERIMENT_VERSION = 'v001'
 EXPERIMENT_NAME = PIPELINE_NAME + '-' + EXPERIMENT_VERSION
 EXPERIMENT_NAMESPACE = 'admin'
 NAME = EXPERIMENT_NAME
