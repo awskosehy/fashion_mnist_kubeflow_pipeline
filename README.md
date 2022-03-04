@@ -1,14 +1,42 @@
 # fashion mnisht pytorch kubeflow pipeline
+## aws instance requirement
 1. select g4dn.2xlarge
 2. storage: 50GB
 3. open all TCP port
 
-
+## how to setup
 [how_to_setup_k8s](https://github.com/awskosehy/fashion_mnist_kubeflow_pipeline/blob/main/how_to_setup_k8s.md)
 
-[setup_kubeflow_1.2_Dex.md](https://github.com/awskosehy/fashion_mnist_kubeflow_pipeline/blob/main/setup_kubeflow_1.2_dex.md)
+[setup_kubeflow_1.2_Dex](https://github.com/awskosehy/fashion_mnist_kubeflow_pipeline/blob/main/setup_kubeflow_1.2_dex.md)
 
-# reference
+## before build docker image
+```
+git clone https://github.com/awskosehy/fashion_mnist_kubeflow_pipeline.git
+cd fashion_mnist_kubeflow_pipeline/pipeline
+# change config.py based on aws instance ip, minio NodePort, and katib configs
+```
+
+## how to build docker images
+```
+sh build_image.sh
+```
+
+## how to run docker image
+```
+docker run -it --rm kosehy/kfp
+```
+
+## run pipeline
+```
+python pipeline.py
+```
+
+## check at Kubeflow dashboard
+```
+AWS_PUBLIC_IP_ADDR:31380
+```
+
+## reference
 [Kubeflow 1.2 dex how to access to ml-pipeline service](https://github.com/kubeflow/pipelines/issues/4440#issuecomment-687689294)
 
 [Kubeflow Jupyter notebook "Namespace is empty" issue](https://github.com/kubeflow-kale/kale/issues/210#issuecomment-727018461)
